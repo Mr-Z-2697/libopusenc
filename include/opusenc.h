@@ -272,7 +272,7 @@ OPE_EXPORT int ope_comments_add_picture_from_memory(OggOpusComments *comments, c
     \param[out] error Error code (NULL if no error is to be returned)
     \return Newly-created encoder.
     */
-OPE_EXPORT OggOpusEnc *ope_encoder_create_file(const char *path, OggOpusComments *comments, opus_int32 rate, int channels, int family, int *error);
+OPE_EXPORT OggOpusEnc *ope_encoder_create_file(const char *path, OggOpusComments *comments, opus_int32 rate, int channels, int family, int *error, int qext);
 
 /** Create a new OggOpus stream to be handled using callbacks
     \param callbacks  Callback functions

@@ -312,7 +312,7 @@ static const OpusEncCallbacks stdio_callbacks = {
 };
 
 /* Create a new OggOpus file. */
-OggOpusEnc *ope_encoder_create_file(const char *path, OggOpusComments *comments, opus_int32 rate, int channels, int family, int *error) {
+OggOpusEnc *ope_encoder_create_file(const char *path, OggOpusComments *comments, opus_int32 rate, int channels, int family, int *error, int qext) {
   OggOpusEnc *enc;
   struct StdioObject *obj;
   obj = malloc(sizeof(*obj));
@@ -320,7 +320,7 @@ OggOpusEnc *ope_encoder_create_file(const char *path, OggOpusComments *comments,
     if (error) *error = OPE_ALLOC_FAIL;
     return NULL;
   }
-  enc = ope_encoder_create_callbacks(&stdio_callbacks, obj, comments, rate, channels, family, error);
+  enc = ope_encoder_create_callbacks(&stdio_callbacks, obj, comments, rate, channels, family, error, qext);
   if (enc == NULL || (error && *error)) {
     free(obj);
     return NULL;

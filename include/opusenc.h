@@ -285,7 +285,7 @@ OPE_EXPORT OggOpusEnc *ope_encoder_create_file(const char *path, OggOpusComments
     \return Newly-created encoder.
     */
 OPE_EXPORT OggOpusEnc *ope_encoder_create_callbacks(const OpusEncCallbacks *callbacks, void *user_data,
-    OggOpusComments *comments, opus_int32 rate, int channels, int family, int *error);
+    OggOpusComments *comments, opus_int32 rate, int channels, int family, int *error, int qext);
 
 /** Create a new OggOpus stream to be used along with.ope_encoder_get_page().
   This is mostly useful for muxing with other streams.
@@ -296,7 +296,7 @@ OPE_EXPORT OggOpusEnc *ope_encoder_create_callbacks(const OpusEncCallbacks *call
     \param[out] error Error code (NULL if no error is to be returned)
     \return Newly-created encoder.
     */
-OPE_EXPORT OggOpusEnc *ope_encoder_create_pull(OggOpusComments *comments, opus_int32 rate, int channels, int family, int *error);
+OPE_EXPORT OggOpusEnc *ope_encoder_create_pull(OggOpusComments *comments, opus_int32 rate, int channels, int family, int *error, int qext);
 
 /** Deferred initialization of the encoder to force an explicit channel mapping. This can be used to override the default channel coupling,
     but using it for regular surround will almost certainly lead to worse quality.

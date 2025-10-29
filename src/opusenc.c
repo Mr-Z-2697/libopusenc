@@ -367,7 +367,7 @@ static void stream_destroy(EncStream *stream) {
 }
 
 static OggOpusEnc *ope_encoder_create_callbacks_impl(const OpusEncCallbacks *callbacks, void *user_data,
-    OggOpusComments *comments, opus_int32 rate, int channels, int family, int *error) {
+    OggOpusComments *comments, opus_int32 rate, int channels, int family, int *error, int qext) {
   OggOpusEnc *enc=NULL;
   int ret;
   if (family != 0 && family != 1 &&
@@ -430,7 +430,10 @@ static OggOpusEnc *ope_encoder_create_callbacks_impl(const OpusEncCallbacks *cal
     opeint_encoder_ctl(&enc->st, OPUS_SET_EXPERT_FRAME_DURATION(OPUS_FRAMESIZE_20_MS));
   }
   if (rate != 48000) {
-    enc->re = speex_resampler_init(channels, rate, 48000, 5, NULL);
+    if (qext && rate > 48000)
+      enc->re = speex_resampler_init(channels, rate, 96000, 5, NULL);
+    else
+      enc->re = speex_resampler_init(channels, rate, 48000, 5, NULL);
     if (enc->re == NULL) goto fail;
     speex_resampler_skip_zeros(enc->re);
   } else {
@@ -442,7 +445,7 @@ static OggOpusEnc *ope_encoder_create_callbacks_impl(const OpusEncCallbacks *cal
   enc->last_page_granule = 0;
   enc->draining = 0;
   if ( (enc->buffer = malloc(sizeof(*enc->buffer)*BUFFER_SAMPLES*channels)) == NULL) goto fail;
-  if (rate != 48000) {
+  if (rate != 48000 || (qext && rate != 96000)) {
     /* Allocate an extra LPC_PADDING samples so we can do the padding in-place. */
     if ( (enc->lpc_buffer = malloc(sizeof(*enc->lpc_buffer)*(LPC_INPUT+LPC_PADDING)*channels)) == NULL) goto fail;
     memset(enc->lpc_buffer, 0, sizeof(*enc->lpc_buffer)*LPC_INPUT*channels);
@@ -472,17 +475,17 @@ fail:
 
 /* Create a new OggOpus stream (callback-based). */
 OggOpusEnc *ope_encoder_create_callbacks(const OpusEncCallbacks *callbacks, void *user_data,
-    OggOpusComments *comments, opus_int32 rate, int channels, int family, int *error) {
+    OggOpusComments *comments, opus_int32 rate, int channels, int family, int *error, int qext) {
   if (callbacks == NULL) {
     if (error) *error = OPE_BAD_ARG;
     return NULL;
   }
-  return ope_encoder_create_callbacks_impl(callbacks, user_data, comments, rate, channels, family, error);
+  return ope_encoder_create_callbacks_impl(callbacks, user_data, comments, rate, channels, family, error, qext);
 }
 
 /* Create a new OggOpus stream, pulling one page at a time. */
-OggOpusEnc *ope_encoder_create_pull(OggOpusComments *comments, opus_int32 rate, int channels, int family, int *error) {
-  return ope_encoder_create_callbacks_impl(NULL, NULL, comments, rate, channels, family, error);
+OggOpusEnc *ope_encoder_create_pull(OggOpusComments *comments, opus_int32 rate, int channels, int family, int *error, int qext) {
+  return ope_encoder_create_callbacks_impl(NULL, NULL, comments, rate, channels, family, error, qext);
 }
 
 int ope_encoder_deferred_init_with_mapping(OggOpusEnc *enc, int family, int streams,

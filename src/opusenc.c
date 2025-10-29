@@ -444,11 +444,11 @@ static OggOpusEnc *ope_encoder_create_callbacks_impl(const OpusEncCallbacks *cal
   enc->write_granule = 0;
   enc->last_page_granule = 0;
   enc->draining = 0;
-  if ( (enc->buffer = malloc(sizeof(*enc->buffer)*BUFFER_SAMPLES*channels)) == NULL) goto fail;
+  if ( (enc->buffer = malloc(sizeof(*enc->buffer)*BUFFER_SAMPLES*channels*(qext+1))) == NULL) goto fail;
   if (rate != 48000 || (qext && rate != 96000)) {
     /* Allocate an extra LPC_PADDING samples so we can do the padding in-place. */
-    if ( (enc->lpc_buffer = malloc(sizeof(*enc->lpc_buffer)*(LPC_INPUT+LPC_PADDING)*channels)) == NULL) goto fail;
-    memset(enc->lpc_buffer, 0, sizeof(*enc->lpc_buffer)*LPC_INPUT*channels);
+    if ( (enc->lpc_buffer = malloc(sizeof(*enc->lpc_buffer)*(LPC_INPUT+LPC_PADDING)*channels*(qext+1))) == NULL) goto fail;
+    memset(enc->lpc_buffer, 0, sizeof(*enc->lpc_buffer)*LPC_INPUT*channels*(qext+1));
   }
   enc->buffer_start = enc->buffer_end = 0;
   if (callbacks != NULL)

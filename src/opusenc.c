@@ -367,7 +367,7 @@ static void stream_destroy(EncStream *stream) {
 }
 
 static OggOpusEnc *ope_encoder_create_callbacks_impl(const OpusEncCallbacks *callbacks, void *user_data,
-    OggOpusComments *comments, opus_int32 rate, int channels, int family, int *error) {
+    OggOpusComments *comments, opus_int32 rate, int channels, int family, int application, int *error) {
   OggOpusEnc *enc=NULL;
   int ret;
   if (family != 0 && family != 1 &&
@@ -417,7 +417,7 @@ static OggOpusEnc *ope_encoder_create_callbacks_impl(const OpusEncCallbacks *cal
     ret=opeint_encoder_surround_init(&enc->st, 48000, channels,
         enc->header.channel_mapping, &enc->header.nb_streams,
         &enc->header.nb_coupled, enc->header.stream_map,
-        OPUS_APPLICATION_AUDIO);
+        application);
     if (! (ret == OPUS_OK) ) {
       if (ret == OPUS_BAD_ARG) ret = OPE_BAD_ARG;
       else if (ret == OPUS_INTERNAL_ERROR) ret = OPE_INTERNAL_ERROR;
@@ -477,7 +477,17 @@ OggOpusEnc *ope_encoder_create_callbacks(const OpusEncCallbacks *callbacks, void
     if (error) *error = OPE_BAD_ARG;
     return NULL;
   }
-  return ope_encoder_create_callbacks_impl(callbacks, user_data, comments, rate, channels, family, error);
+  return ope_encoder_create_callbacks_impl(callbacks, user_data, comments, rate, channels, family, OPUS_APPLICATION_AUDIO, error);
+}
+
+/* Create a new OggOpus stream (callback-based). */
+OggOpusEnc *ope_encoder_create_callbacks_mod(const OpusEncCallbacks *callbacks, void *user_data,
+    OggOpusComments *comments, opus_int32 rate, int channels, int family, int application, int *error) {
+  if (callbacks == NULL) {
+    if (error) *error = OPE_BAD_ARG;
+    return NULL;
+  }
+  return ope_encoder_create_callbacks_impl(callbacks, user_data, comments, rate, channels, family, application, error);
 }
 
 /* Create a new OggOpus stream, pulling one page at a time. */

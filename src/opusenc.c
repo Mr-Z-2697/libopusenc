@@ -492,7 +492,7 @@ OggOpusEnc *ope_encoder_create_callbacks_mod(const OpusEncCallbacks *callbacks, 
 
 /* Create a new OggOpus stream, pulling one page at a time. */
 OggOpusEnc *ope_encoder_create_pull(OggOpusComments *comments, opus_int32 rate, int channels, int family, int *error) {
-  return ope_encoder_create_callbacks_impl(NULL, NULL, comments, rate, channels, family, error);
+  return ope_encoder_create_callbacks_impl(NULL, NULL, comments, rate, channels, family, OPUS_APPLICATION_AUDIO, error);
 }
 
 int ope_encoder_deferred_init_with_mapping(OggOpusEnc *enc, int family, int streams,

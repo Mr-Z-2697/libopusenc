@@ -287,6 +287,20 @@ OPE_EXPORT OggOpusEnc *ope_encoder_create_file(const char *path, OggOpusComments
 OPE_EXPORT OggOpusEnc *ope_encoder_create_callbacks(const OpusEncCallbacks *callbacks, void *user_data,
     OggOpusComments *comments, opus_int32 rate, int channels, int family, int *error);
 
+/** Create a new OggOpus stream to be handled using callbacks
+    \param callbacks  Callback functions
+    \param user_data  Pointer to be associated with the stream and passed to the callbacks
+    \param comments   Comments associated with the stream
+    \param rate       Input sampling rate (48 kHz is faster)
+    \param channels   Number of channels
+    \param family     Mapping family (0 for mono/stereo, 1 for surround)
+    \param application Application, see opus_defines.h
+    \param[out] error Error code (NULL if no error is to be returned)
+    \return Newly-created encoder.
+    */
+OPE_EXPORT OggOpusEnc *ope_encoder_create_callbacks_mod(const OpusEncCallbacks *callbacks, void *user_data,
+    OggOpusComments *comments, opus_int32 rate, int channels, int family, int application, int *error);
+
 /** Create a new OggOpus stream to be used along with.ope_encoder_get_page().
   This is mostly useful for muxing with other streams.
     \param comments   Comments associated with the stream

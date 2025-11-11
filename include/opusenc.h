@@ -305,6 +305,9 @@ OPE_EXPORT OggOpusEnc *ope_encoder_create_callbacks(const OpusEncCallbacks *call
     */
 OPE_EXPORT OggOpusEnc *ope_encoder_create_callbacks_mod(const OpusEncCallbacks *callbacks, void *user_data,
     OggOpusComments *comments, opus_int32 rate, int channels, int family, int application, int *error);
+#ifndef Z_OPE_ENCODER_CREATE_CALLBACKS_MOD
+#define Z_OPE_ENCODER_CREATE_CALLBACKS_MOD 1
+#endif
 
 /** Create a new OggOpus stream to be used along with.ope_encoder_get_page().
   This is mostly useful for muxing with other streams.
